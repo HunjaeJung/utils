@@ -1,3 +1,4 @@
+import argparse
 import os
 
 
@@ -27,3 +28,30 @@ def split(filehandler, delimiter=',', row_limit=1000,
             if keep_headers:
                 current_out_writer.writerow(headers)
         current_out_writer.writerow(row)
+
+
+if __name__ == '__main__':
+    # parse arguments
+    parser = argparse.ArgumentParser(description='csv splitter')
+    
+    # filename
+    parser.add_argument(
+        '-f', '--filename', help='target csv file name', required=True)
+
+    # environment
+    parser.add_argument(
+        '-limit', '--row_limit', help='Max limit row numbers (limit 1000)', required=False, type=int)
+
+    # environment
+    parser.add_argument(
+        '-head', '--keep_headers', help='keep headers (0 or 1)', required=False, type=int)
+
+    options = parser.parse_args()
+
+    f = open(options.filename, 'r')
+
+    row_limit = 1000 if options.row_limit is None else options.row_limit
+    keep_headers = True if options.keep_headers is None else options.keep_headers
+
+    split(f, row_limit=row_limit, keep_headers=keep_headers)
+
